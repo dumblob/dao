@@ -335,6 +335,12 @@ static FILE* DaoIO_OpenFile( DaoProcess *proc, DString *name, const char *mode, 
 	char buf[200];
 	FILE *fin;
 
+	if( Dao_IsDir( fname->chars ) ){
+		snprintf( buf, sizeof(buf), "fopen() is undefined for directories. Unable to open: %s", DString_GetData( name ) );
+		DaoProcess_RaiseError( proc, "Stream", buf );
+		return NULL;
+	}
+
 	DaoIO_MakePath( proc, fname );
 	fin = Dao_OpenFile( fname->chars, mode );
 	DString_Delete( fname );
